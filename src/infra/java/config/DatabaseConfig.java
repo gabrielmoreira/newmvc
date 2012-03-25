@@ -15,12 +15,12 @@ import com.jolbox.bonecp.BoneCPDataSource;
 @Configuration
 public class DatabaseConfig {
 
-	@Bean
+	@Bean(name = "dataSource")
 	public DataSource getDataSource(Properties applicationProperties) throws Exception {
 		return new BoneCPDataSource(new BoneCPConfig(new PropertyManager(applicationProperties).getSection("datasource")));
 	}
 
-	@Bean
+	@Bean(name = "transactionManager")
 	public PlatformTransactionManager getTransactionManager(DataSource dataSource) {
 		return new DataSourceTransactionManager(dataSource);
 	}
