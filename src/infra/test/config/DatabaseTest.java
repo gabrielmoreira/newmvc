@@ -1,6 +1,7 @@
 package config;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -14,13 +15,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-public class ConfigurationTest {
+public class DatabaseTest {
 
 	private static AnnotationConfigApplicationContext context;
 
 	@BeforeClass
 	public static void setupClass() {
-		context = new AnnotationConfigApplicationContext(DatabaseConfig.class, ConfigurationTest.class);
+		context = new AnnotationConfigApplicationContext(DatabaseConfig.class, DatabaseTest.class);
 	}
 
 	@Bean(name = "applicationProperties")
@@ -51,4 +52,18 @@ public class ConfigurationTest {
 		connection.close();
 	}
 
+	@Test
+	public void testSql() throws Exception {
+		DataSource dataSource = context.getBean(DataSource.class);
+		Assert.assertNotNull(dataSource);
+		Connection connection = dataSource.getConnection();
+		Assert.assertNotNull(connection);
+		connection.prepareStatement("CREATE TABLE USERS (name varchar);").execute();
+		connection.prepareStatement("INSERT INTO USERS (name) VALUES ('GABRIEL');").execute();
+		ResultSet rs = connection.prepareStatement("SELECT COUNT(*) FROM USERS").executeQuery();
+		Assert.assertNotNull(rs);
+		rs.next();
+		Assert.assertEquals(1, rs.getLong(1));
+		connection.close();
+	}
 }
