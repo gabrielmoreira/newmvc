@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class ApplicationConfigTest {
+	@SuppressWarnings("unused")
 	private static AnnotationConfigApplicationContext context;
 
 	@BeforeClass
