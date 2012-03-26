@@ -1,0 +1,14 @@
+<configuration scan="true" scanPeriod="10 seconds">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-15thread{15}] %-5level %60logger{60} - %msg%n</Pattern>
+		</layout>
+	</appender>
+
+	<root>
+		<level value="TRACE" />
+		<appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>

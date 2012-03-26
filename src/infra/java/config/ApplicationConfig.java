@@ -2,7 +2,7 @@ package config;
 
 import org.springframework.context.annotation.Import;
 
-@Import(DatabaseConfig.class)
+@Import(value = { DatabaseConfig.class, JPAConfig.class })
 public class ApplicationConfig {
 
 }
