@@ -1,4 +1,4 @@
-package config;
+package lang;
 
 import java.util.Map.Entry;
 import java.util.Properties;

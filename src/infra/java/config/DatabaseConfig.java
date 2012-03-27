@@ -4,6 +4,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import lang.PropertyManager;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
