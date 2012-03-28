@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -23,12 +22,7 @@ import config.sample.SampleUser;
 @Configuration
 public class JpaConfigTest {
 
-	private static AnnotationConfigApplicationContext context;
-
-	@BeforeClass
-	public static void setupClass() {
-		context = new AnnotationConfigApplicationContext(DatabaseConfig.class, JPAConfig.class, JpaConfigTest.class);
-	}
+	private static AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DatabaseConfig.class, JPAConfig.class, JpaConfigTest.class);
 
 	@Bean(name = "applicationProperties")
 	public Properties getProperties() {
@@ -46,27 +40,34 @@ public class JpaConfigTest {
 	}
 
 	@Test
-	public void testTransactionManager() {
+	public void deveExistirUmJpaTransactionManagerQuandoObterDoSpring() {
+		// Quando
 		PlatformTransactionManager transactionManager = context.getBean(PlatformTransactionManager.class);
+		// Então
 		Assert.assertNotNull(transactionManager);
 		Assert.assertEquals(JpaTransactionManager.class, transactionManager.getClass());
 	}
 
 	@Test
-	public void testEntityManagerFactory() {
+	public void deveExistirUmEntityManagerFactoryQuandoObterDoSpring() {
+		// Quando
 		EntityManagerFactory emf = context.getBean(EntityManagerFactory.class);
+		// Então
 		Assert.assertNotNull(emf);
 	}
 
 	@Test
-	public void testEntityManager() {
+	public void deveExistirUmEntityManagerQuandoObterDoSpring() {
+		// Quando
 		SampleBean sampleBean = context.getBean(SampleBean.class);
+		// Então
 		Assert.assertNotNull(sampleBean);
 		Assert.assertNotNull(sampleBean.getEm());
 	}
 
 	@Test
-	public void testEntityManagerWriteAndRollback() {
+	public void deveFazerRollbackQuandoPersistirUmaEntidade() {
+		// Quando
 		PlatformTransactionManager tm = context.getBean(PlatformTransactionManager.class);
 		TransactionStatus transaction = tm.getTransaction(new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
 		try {
@@ -84,6 +85,7 @@ public class JpaConfigTest {
 		} finally {
 			tm.rollback(transaction);
 		}
+		// Então
 		TransactionStatus transaction2 = tm.getTransaction(new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW));
 		try {
 			SampleBean sampleBean = context.getBean(SampleBean.class);

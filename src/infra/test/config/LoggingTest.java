@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.slf4j.LoggerFactory;
@@ -23,12 +22,7 @@ import config.sample.SampleController;
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class LoggingTest {
-	private static AnnotationConfigApplicationContext context;
-
-	@BeforeClass
-	public static void setupClass() {
-		context = new AnnotationConfigApplicationContext(LoggingConfig.class, LoggingTest.class);
-	}
+	private static AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(LoggingConfig.class, LoggingTest.class);
 
 	@Bean
 	public SampleController getSampleController() {
@@ -41,7 +35,8 @@ public class LoggingTest {
 	}
 
 	@Test
-	public void testSampleControllerSucesso() {
+	public void deveFazerLogDoInicioFimDoMetodoQuandoInterceptarPorAspectoUmaChamadaDeUmMetodo() {
+		// Dado
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 		Logger log = loggerContext.getLogger(SampleController.class);
 		@SuppressWarnings("unchecked")
@@ -49,7 +44,9 @@ public class LoggingTest {
 		log.addAppender(appender);
 		try {
 			SampleController sampleController = context.getBean(SampleController.class);
+			// Quando
 			sampleController.success();
+			// Então
 		} finally {
 			log.detachAppender(appender);
 			verify(appender, times(2)).doAppend(any(ILoggingEvent.class));
@@ -57,7 +54,8 @@ public class LoggingTest {
 	}
 
 	@Test(expected = UnsupportedOperationException.class)
-	public void testSampleControllerErro() {
+	public void deveFazerLogDaExceptionLancadaNumMetodoQuandoInterceptarPorAspectoUmaChamadaDeUmMetodo() {
+		// Dado
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 		Logger log = loggerContext.getLogger(SampleController.class);
 		@SuppressWarnings("unchecked")
@@ -65,7 +63,9 @@ public class LoggingTest {
 		log.addAppender(appender);
 		try {
 			SampleController sampleController = context.getBean(SampleController.class);
+			// Quando
 			sampleController.error();
+			// Então
 		} catch (UnsupportedOperationException e) {
 			ArgumentCaptor<ILoggingEvent> loggingEventCaptor = ArgumentCaptor.forClass(ILoggingEvent.class);
 			verify(appender, times(3)).doAppend(loggingEventCaptor.capture());
@@ -77,7 +77,8 @@ public class LoggingTest {
 	}
 
 	@Test
-	public void testSampleControllerSucessoComDelay4Segundos() {
+	public void deveFazerLogDeAlertaSobrePerformanceQuandoUmaExecucaoDurarMaisQue2Segundos() {
+		// Dado
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 		Logger log = loggerContext.getLogger(SampleController.class);
 		@SuppressWarnings("unchecked")
@@ -85,7 +86,9 @@ public class LoggingTest {
 		log.addAppender(appender);
 		try {
 			SampleController sampleController = context.getBean(SampleController.class);
+			// Quando
 			sampleController.successComDelay();
+			// Então
 		} finally {
 			log.detachAppender(appender);
 			ArgumentCaptor<ILoggingEvent> loggingEventCaptor = ArgumentCaptor.forClass(ILoggingEvent.class);
@@ -101,7 +104,8 @@ public class LoggingTest {
 	}
 
 	@Test
-	public void testSampleControllerSucessoComPoucoDelay() {
+	public void naoDeveFazerLogDeAlertaSobrePerformanceQuandoUmaExecucaoDurarMenosQue2Segundos() {
+		// Dado
 		LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
 		Logger log = loggerContext.getLogger(SampleController.class);
 		@SuppressWarnings("unchecked")
@@ -109,7 +113,9 @@ public class LoggingTest {
 		log.addAppender(appender);
 		try {
 			SampleController sampleController = context.getBean(SampleController.class);
+			// Quando
 			sampleController.successComPoucoDelay();
+			// Então
 		} finally {
 			log.detachAppender(appender);
 			verify(appender, times(2)).doAppend(any(ILoggingEvent.class));
